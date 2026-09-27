@@ -30,19 +30,30 @@ if (Test-Path -LiteralPath $toc) {
     if ($line -match '^##\s*Version:\s*(\S+)') { $installed = $Matches[1] }
 }
 
-# Latest published version
+# Latest published version. latest.txt: the version on the first line and,
+# optionally, the zip's SHA-256 on the second (a build republished with the
+# same version number is still installed)
 try {
-    $latest = (Invoke-WebRequest -UseBasicParsing "$base/latest.txt?t=$([DateTime]::UtcNow.Ticks)").Content.Trim()
+    $lines = @((Invoke-WebRequest -UseBasicParsing "$base/latest.txt?t=$([DateTime]::UtcNow.Ticks)").Content -split "`r?`n" |
+        ForEach-Object { $_.Trim() } | Where-Object { $_ })
 } catch {
     Stop-Update "Could not check the latest version. Are you connected to the internet?`n$($_.Exception.Message)"
 }
+$latest = $lines[0]
+$latestHash = if ($lines.Count -gt 1) { $lines[1].ToLower() } else { $null }
 if ($latest -notmatch '^\d+\.\d+\.\d+([-.][0-9A-Za-z.]+)?$') { Stop-Update "The published version is not valid: '$latest'" }
+
+# The build this .bat installed last time (written into Rheizor-Core)
+$buildFile = Join-Path $AddOns 'Rheizor-Core\build.txt'
+$installedHash = $null
+if (Test-Path -LiteralPath $buildFile) { $installedHash = (Get-Content -LiteralPath $buildFile -Raw).Trim().ToLower() }
 
 Say ""
 Say "Installed Rheizor: $(if ($installed) { $installed } else { '(none)' })"
 Say "Latest version:    $latest" White
 
-if ($installed -eq $latest -and -not $Force) {
+$sameBuild = -not $latestHash -or $installedHash -eq $latestHash
+if ($installed -eq $latest -and $sameBuild -and -not $Force) {
     Say ""
     Say "You already have the latest version. Nothing to do." Green
     exit 0
@@ -60,6 +71,8 @@ try {
     } catch {
         Stop-Update "Could not download the zip.`n$($_.Exception.Message)"
     }
+    $hash = (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash.ToLower()
+    if ($latestHash -and $hash -ne $latestHash) { Stop-Update "The downloaded zip is damaged (its checksum doesn't match). Nothing was changed. Try again later." }
     $unzipped = Join-Path $work 'files'
     Expand-Archive -LiteralPath $zip -DestinationPath $unzipped -Force
     $folders = @(Get-ChildItem -LiteralPath $unzipped -Directory | Where-Object { $_.Name -like 'Rheizor-*' })
@@ -71,6 +84,7 @@ try {
         if (Test-Path -LiteralPath $dest) { Remove-Item -LiteralPath $dest -Recurse -Force }
         Move-Item -LiteralPath $f.FullName -Destination $dest
     }
+    [IO.File]::WriteAllText($buildFile, "$hash`n")
     Say ""
     Say "Rheizor $latest installed ($($folders.Count) addons)." Green
 } finally {

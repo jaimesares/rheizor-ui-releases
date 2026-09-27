@@ -12,8 +12,10 @@ each switched on or off from `/rz`.
 
 ### Included
 
-- **Rheizor-Core**: settings, options, move mode, profiles, backups and the addon manager (`/rz`). Shared tank and threat
-  detection (page "Tanks and threat").
+- **Rheizor-Core**: settings, options, profiles, backups and the addon manager (`/rz`), with a list of every Rheizor
+  addon and quick buttons to turn it on or off, move only its elements, or open its options. Edit mode (`/rz mover`)
+  with a grid, pixel nudging and "Glue": drop an element next to another one and it sticks to it and follows it when
+  you move the other one (drag it away to unglue it). Shared tank and threat detection (page "Tanks and threat").
 - **Rheizor-ActionBars**: replaces Blizzard's action bars (Bartender-style).
 - **Rheizor-Automation**: automatic quests and other tasks.
 - **Rheizor-Bags**: junk selling and bag settings.
@@ -21,7 +23,7 @@ each switched on or off from `/rz`.
 - **Rheizor-CastBars**: custom cast bars.
 - **Rheizor-CC**: your crowd control, other players' CC on your target, diminishing returns and the controls on you.
 - **Rheizor-Characters**: a record of every character on the account (gold, rested XP, bags, bank, mail, professions).
-- **Rheizor-Chat**: chat improvements (class colours, history, input box position, fade when unused).
+- **Rheizor-Chat**: chat improvements (class colours, history, input box above or below the chat, fade when unused).
 - **Rheizor-CombatText**: custom scrolling combat text.
 - **Rheizor-ComboPoints**: configurable combo points on screen or on the target's nameplate.
 - **Rheizor-Console**: console settings (camera, names, combat, chat, sound, system).
@@ -35,7 +37,8 @@ each switched on or off from `/rz`.
 - **Rheizor-Minimap**: minimap settings.
 - **Rheizor-MinimapButtons**: collects minimap icons into one button or a bar.
 - **Rheizor-Mouse**: cursor ring, trail, global cooldown and cast progress at the cursor.
-- **Rheizor-Nameplates**: nameplates with debuffs and threat colours (including "another tank has it").
+- **Rheizor-Nameplates**: nameplates with debuffs and threat colours (including "another tank has it"), shown always
+  or only when solo, in a party, in a raid or in dungeons and raids.
 - **Rheizor-Notes**: on-screen Markdown notes with wish lists (`/rznotas`).
 - **Rheizor-RaidTools**: pings, marks and raid utilities.
 - **Rheizor-Stats**: detailed stats next to the character window.
